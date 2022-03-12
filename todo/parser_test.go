@@ -1,4 +1,4 @@
-package parser_test
+package todo_test
 
 import (
 	"io/ioutil"
@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/fsmiamoto/git-rebase-todo-parser/parser"
+	"github.com/fsmiamoto/git-todo-parser/todo"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,14 +19,14 @@ func TestParser(t *testing.T) {
 	tests := []struct {
 		name      string
 		inputPath string
-		expect    []parser.Todo
+		expect    []todo.Todo
 	}{
-		{name: "basic", inputPath: "./fixtures/todo1", expect: []parser.Todo{
-			{Command: parser.Pick, Commit: "deadbeef"},
-			{Command: parser.Pick, Commit: "beefdead"},
-			{Command: parser.Comment},
-			{Command: parser.Exec, ExecCommand: "cd subdir; make test"},
-			{Command: parser.Break},
+		{name: "basic", inputPath: "./fixtures/todo1", expect: []todo.Todo{
+			{Command: todo.Pick, Commit: "deadbeef"},
+			{Command: todo.Pick, Commit: "beefdead"},
+			{Command: todo.Comment},
+			{Command: todo.Exec, ExecCommand: "cd subdir; make test"},
+			{Command: todo.Break},
 		}},
 	}
 
@@ -37,7 +37,7 @@ func TestParser(t *testing.T) {
 
 			require.NoError(t, err)
 
-			result, err := parser.Parse(f)
+			result, err := todo.Parse(f)
 
 			require.NoError(t, err)
 

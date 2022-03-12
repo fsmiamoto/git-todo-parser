@@ -1,4 +1,4 @@
-module github.com/fsmiamoto/git-rebase-todo-parser
+module github.com/fsmiamoto/git-todo-parser
 
 go 1.17
 
