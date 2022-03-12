@@ -22,9 +22,10 @@ func TestParser(t *testing.T) {
 		expect    []parser.Todo
 	}{
 		{name: "basic", inputPath: "./fixtures/todo1", expect: []parser.Todo{
-			{Command: parser.Pick},
-			{Command: parser.Pick},
-			{Command: parser.Exec},
+			{Command: parser.Pick, Commit: "deadbeef"},
+			{Command: parser.Pick, Commit: "beefdead"},
+			{Command: parser.Comment},
+			{Command: parser.Exec, ExecCommand: "cd subdir; make test"},
 			{Command: parser.Break},
 		}},
 	}

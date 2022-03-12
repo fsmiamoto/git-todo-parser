@@ -52,10 +52,11 @@ var todoCommandInfo = [Comment + 1]struct {
 }
 
 type Todo struct {
-	Command TodoCommand
-	Commit  string
-	Label   string
-	Oneline string
+	Command     TodoCommand
+	Commit      string
+	ExecCommand string
+	Label       string
+	Msg         string
 }
 
 func Parse(f io.Reader) ([]Todo, error) {
@@ -97,9 +98,25 @@ func parseLine(l string) (Todo, error) {
 	for i := TodoCommand(0); i < Comment; i++ {
 		if isCommand(i, fields[0]) {
 			todo.Command = TodoCommand(i)
+			fields = fields[1:]
 			break
 		}
 	}
+
+	if todo.Command == Break {
+		return todo, nil
+	}
+
+	if todo.Command == Exec {
+		todo.ExecCommand = strings.Join(fields, " ")
+		return todo, nil
+	}
+
+	if len(fields) == 0 {
+		return todo, fmt.Errorf("missing commit id: %s", trimmed)
+	}
+
+	todo.Commit = fields[0]
 
 	return todo, nil
 }
