@@ -1,0 +1,4 @@
+pick deadbeef My commit msg
+pick beefdead Another awesome commit
+exec cd subdir; make test
+break
