@@ -2,9 +2,17 @@ package todo
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
+)
+
+var (
+	ErrUnexpectedCommand = errors.New("unexpected command")
+	ErrMissingLabel      = errors.New("missing label")
+	ErrMissingCommit     = errors.New("missing commit")
+	ErrMissingExecCmd    = errors.New("missing command for exec")
 )
 
 func Parse(f io.Reader) ([]Todo, error) {
@@ -18,7 +26,7 @@ func Parse(f io.Reader) ([]Todo, error) {
 
 		cmd, err := parseLine(line)
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse line: %w", err)
+			return nil, fmt.Errorf("failed to parse line %q: %w", line, err)
 		}
 
 		result = append(result, cmd)
@@ -53,25 +61,31 @@ func parseLine(l string) (Todo, error) {
 
 	if todo.Command == 0 {
 		// unexpected command
-		return todo, fmt.Errorf("unexpected command: %q", trimmed)
+		return todo, ErrUnexpectedCommand
 	}
 
 	if todo.Command == Break {
 		return todo, nil
 	}
 
-	if len(fields) == 0 {
-		return todo, fmt.Errorf("missing commit id: %q", trimmed)
-	}
-
 	if todo.Command == Label || todo.Command == Reset {
+		if len(fields) == 0 {
+			return todo, ErrMissingLabel
+		}
 		todo.Label = strings.Join(fields, " ")
 		return todo, nil
 	}
 
 	if todo.Command == Exec {
+		if len(fields) == 0 {
+			return todo, ErrMissingExecCmd
+		}
 		todo.ExecCommand = strings.Join(fields, " ")
 		return todo, nil
+	}
+
+	if len(fields) == 0 {
+		return todo, ErrMissingCommit
 	}
 
 	todo.Commit = fields[0]

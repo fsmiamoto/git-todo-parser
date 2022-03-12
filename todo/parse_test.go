@@ -17,9 +17,10 @@ func readFixture(name string) []byte {
 
 func TestParse(t *testing.T) {
 	tests := []struct {
-		name      string
-		inputPath string
-		expect    []todo.Todo
+		name        string
+		inputPath   string
+		expect      []todo.Todo
+		expectError error
 	}{
 		{name: "basic", inputPath: "./fixtures/todo1", expect: []todo.Todo{
 			{Command: todo.Pick, Commit: "deadbeef"},
@@ -30,6 +31,8 @@ func TestParse(t *testing.T) {
 			{Command: todo.Label, Label: "awesomecommit"},
 			{Command: todo.Break},
 		}},
+		{name: "missing exec cmd", inputPath: "./fixtures/missing_exec_cmd", expectError: todo.ErrMissingExecCmd},
+		{name: "missing label", inputPath: "./fixtures/missing_label", expectError: todo.ErrMissingLabel},
 	}
 
 	for _, tt := range tests {
@@ -40,6 +43,11 @@ func TestParse(t *testing.T) {
 			require.NoError(t, err)
 
 			result, err := todo.Parse(f)
+
+			if tt.expectError != nil {
+				require.ErrorIs(t, err, tt.expectError)
+				return
+			}
 
 			require.NoError(t, err)
 
