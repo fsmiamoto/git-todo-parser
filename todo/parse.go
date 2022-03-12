@@ -7,58 +7,6 @@ import (
 	"strings"
 )
 
-type TodoCommand int
-
-const (
-	Pick TodoCommand = iota
-	Revert
-	Edit
-	Reword
-	Fixup
-	Squash
-
-	Exec
-	Break
-	Label
-	Reset
-	Merge
-
-	NoOp
-	Drop
-
-	Comment
-)
-
-const CommentChar = "#"
-
-var todoCommandInfo = [Comment + 1]struct {
-	nickname string
-	literal  string
-}{
-	{"p", "pick"},
-	{"", "revert"},
-	{"e", "edit"},
-	{"r", "reword"},
-	{"f", "fixup"},
-	{"s", "squash"},
-	{"x", "exec"},
-	{"b", "break"},
-	{"l", "label"},
-	{"t", "reset"},
-	{"m", "merge"},
-	{"", "noop"},
-	{"d", "drop"},
-	{"", ""},
-}
-
-type Todo struct {
-	Command     TodoCommand
-	Commit      string
-	ExecCommand string
-	Label       string
-	Msg         string
-}
-
 func Parse(f io.Reader) ([]Todo, error) {
 	var result []Todo
 
@@ -70,7 +18,7 @@ func Parse(f io.Reader) ([]Todo, error) {
 
 		cmd, err := parseLine(line)
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse line %q: %w", line, err)
+			return nil, fmt.Errorf("failed to parse line: %w", err)
 		}
 
 		result = append(result, cmd)
@@ -95,7 +43,7 @@ func parseLine(l string) (Todo, error) {
 
 	fields := strings.Fields(trimmed)
 
-	for i := TodoCommand(0); i < Comment; i++ {
+	for i := TodoCommand(Pick); i < Comment; i++ {
 		if isCommand(i, fields[0]) {
 			todo.Command = TodoCommand(i)
 			fields = fields[1:]
@@ -103,12 +51,17 @@ func parseLine(l string) (Todo, error) {
 		}
 	}
 
+	if todo.Command == 0 {
+		// unexpected command
+		return todo, fmt.Errorf("unexpected command: %q", trimmed)
+	}
+
 	if todo.Command == Break {
 		return todo, nil
 	}
 
 	if len(fields) == 0 {
-		return todo, fmt.Errorf("missing commit id: %s", trimmed)
+		return todo, fmt.Errorf("missing commit id: %q", trimmed)
 	}
 
 	if todo.Command == Label || todo.Command == Reset {
@@ -131,5 +84,5 @@ func isCommand(i TodoCommand, s string) bool {
 		return false
 	}
 	return len(s) > 0 &&
-		(todoCommandInfo[i].literal == s || todoCommandInfo[i].nickname == s)
+		(todoCommandInfo[i].cmd == s || todoCommandInfo[i].nickname == s)
 }

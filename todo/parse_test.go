@@ -15,7 +15,7 @@ func readFixture(name string) []byte {
 	return bytes
 }
 
-func TestParser(t *testing.T) {
+func TestParse(t *testing.T) {
 	tests := []struct {
 		name      string
 		inputPath string
@@ -44,7 +44,7 @@ func TestParser(t *testing.T) {
 			require.NoError(t, err)
 
 			if !reflect.DeepEqual(result, tt.expect) {
-				t.Fatalf("Parser(%v) = %v; want %v", tt.inputPath, result, tt.expect)
+				t.Fatalf("Parse(%v) = %v; want %v", tt.inputPath, result, tt.expect)
 			}
 		})
 	}
