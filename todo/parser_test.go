@@ -24,6 +24,7 @@ func TestParser(t *testing.T) {
 		{name: "basic", inputPath: "./fixtures/todo1", expect: []todo.Todo{
 			{Command: todo.Pick, Commit: "deadbeef"},
 			{Command: todo.Pick, Commit: "beefdead"},
+			{Command: todo.Reset, Label: "somecommit"},
 			{Command: todo.Comment},
 			{Command: todo.Exec, ExecCommand: "cd subdir; make test"},
 			{Command: todo.Label, Label: "awesomecommit"},

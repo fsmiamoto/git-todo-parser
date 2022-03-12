@@ -107,7 +107,11 @@ func parseLine(l string) (Todo, error) {
 		return todo, nil
 	}
 
-	if todo.Command == Label {
+	if len(fields) == 0 {
+		return todo, fmt.Errorf("missing commit id: %s", trimmed)
+	}
+
+	if todo.Command == Label || todo.Command == Reset {
 		todo.Label = strings.Join(fields, " ")
 		return todo, nil
 	}
@@ -115,10 +119,6 @@ func parseLine(l string) (Todo, error) {
 	if todo.Command == Exec {
 		todo.ExecCommand = strings.Join(fields, " ")
 		return todo, nil
-	}
-
-	if len(fields) == 0 {
-		return todo, fmt.Errorf("missing commit id: %s", trimmed)
 	}
 
 	todo.Commit = fields[0]
