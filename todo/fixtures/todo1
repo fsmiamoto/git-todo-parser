@@ -2,4 +2,5 @@ pick deadbeef My commit msg
 p beefdead Another awesome commit
 # comment
 exec cd subdir; make test
+l awesomecommit
 break

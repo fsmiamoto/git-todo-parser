@@ -26,6 +26,7 @@ func TestParser(t *testing.T) {
 			{Command: todo.Pick, Commit: "beefdead"},
 			{Command: todo.Comment},
 			{Command: todo.Exec, ExecCommand: "cd subdir; make test"},
+			{Command: todo.Label, Label: "awesomecommit"},
 			{Command: todo.Break},
 		}},
 	}

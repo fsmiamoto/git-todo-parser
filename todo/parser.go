@@ -107,6 +107,11 @@ func parseLine(l string) (Todo, error) {
 		return todo, nil
 	}
 
+	if todo.Command == Label {
+		todo.Label = strings.Join(fields, " ")
+		return todo, nil
+	}
+
 	if todo.Command == Exec {
 		todo.ExecCommand = strings.Join(fields, " ")
 		return todo, nil
