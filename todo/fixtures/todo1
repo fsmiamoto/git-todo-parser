@@ -4,4 +4,5 @@ reset somecommit
 # comment
 exec cd subdir; make test
 l awesomecommit
+fixup -C abbaceef
 break

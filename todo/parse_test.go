@@ -29,6 +29,7 @@ func TestParse(t *testing.T) {
 			{Command: todo.Comment},
 			{Command: todo.Exec, ExecCommand: "cd subdir; make test"},
 			{Command: todo.Label, Label: "awesomecommit"},
+			{Command: todo.Fixup, Commit: "abbaceef"},
 			{Command: todo.Break},
 		}},
 		{name: "missing exec cmd", inputPath: "./fixtures/missing_exec_cmd", expectError: todo.ErrMissingExecCmd},

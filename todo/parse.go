@@ -84,6 +84,16 @@ func parseLine(l string) (Todo, error) {
 		return todo, nil
 	}
 
+	if todo.Command == Fixup {
+		if len(fields) == 0 {
+			return todo, ErrMissingCommit
+		}
+		// Skip flags
+		if fields[0] == "-C" || fields[0] == "-c" {
+			fields = fields[1:]
+		}
+	}
+
 	if len(fields) == 0 {
 		return todo, ErrMissingCommit
 	}
