@@ -24,6 +24,11 @@ func Parse(f io.Reader) ([]Todo, error) {
 	for scanner.Scan() {
 		line := scanner.Text()
 
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" {
+			continue
+		}
+
 		cmd, err := parseLine(line)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse line %q: %w", line, err)
@@ -39,17 +44,16 @@ func Parse(f io.Reader) ([]Todo, error) {
 	return result, nil
 }
 
-func parseLine(l string) (Todo, error) {
+func parseLine(line string) (Todo, error) {
 	var todo Todo
 
-	trimmed := strings.TrimSpace(l)
-
-	if trimmed == "" || strings.HasPrefix(trimmed, CommentChar) {
+	if strings.HasPrefix(line, CommentChar) {
 		todo.Command = Comment
+		todo.Comment = strings.TrimLeft(line, CommentChar)
 		return todo, nil
 	}
 
-	fields := strings.Fields(trimmed)
+	fields := strings.Fields(line)
 
 	for i := TodoCommand(Pick); i < Comment; i++ {
 		if isCommand(i, fields[0]) {
@@ -72,7 +76,7 @@ func parseLine(l string) (Todo, error) {
 		if len(fields) == 0 {
 			return todo, ErrMissingLabel
 		}
-		todo.Label = strings.Join(fields, " ")
+		todo.Label = fields[0]
 		return todo, nil
 	}
 
@@ -81,6 +85,27 @@ func parseLine(l string) (Todo, error) {
 			return todo, ErrMissingExecCmd
 		}
 		todo.ExecCommand = strings.Join(fields, " ")
+		return todo, nil
+	}
+
+	if todo.Command == Merge {
+		if fields[0] == "-C" || fields[0] == "-c" {
+			fields = fields[1:]
+			if len(fields) == 0 {
+				return todo, ErrMissingCommit
+			}
+			todo.Commit = fields[0]
+			fields = fields[1:]
+		}
+		if len(fields) == 0 {
+			return todo, ErrMissingLabel
+		}
+		todo.Label = fields[0]
+		fields = fields[1:]
+		if fields[0] == "#" {
+			fields = fields[1:]
+			todo.Msg = strings.Join(fields, " ")
+		}
 		return todo, nil
 	}
 
@@ -99,6 +124,10 @@ func parseLine(l string) (Todo, error) {
 	}
 
 	todo.Commit = fields[0]
+	fields = fields[1:]
+
+	// Trim # and whitespace
+	todo.Msg = strings.TrimPrefix(strings.Join(fields, " "), CommentChar+" ")
 
 	return todo, nil
 }
