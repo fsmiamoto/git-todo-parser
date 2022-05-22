@@ -33,7 +33,28 @@ type Todo struct {
 	Msg         string
 }
 
-var todoCommandInfo = [Comment]struct {
+func (t TodoCommand) String() string {
+	return commandToString[t]
+}
+
+var commandToString = map[TodoCommand]string{
+	Pick:    "pick",
+	Revert:  "revert",
+	Edit:    "edit",
+	Reword:  "reword",
+	Fixup:   "fixup",
+	Squash:  "squash",
+	Exec:    "exec",
+	Break:   "break",
+	Label:   "label",
+	Reset:   "reset",
+	Merge:   "merge",
+	NoOp:    "noop",
+	Drop:    "drop",
+	Comment: "comment",
+}
+
+var todoCommandInfo = [14]struct {
 	nickname string
 	cmd      string
 }{
