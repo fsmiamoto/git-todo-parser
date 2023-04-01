@@ -49,9 +49,9 @@ func TestParse(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			f, err := os.Open(tt.inputPath)
-			defer f.Close()
-
 			require.NoError(t, err)
+
+			defer f.Close()
 
 			result, err := todo.Parse(f)
 
