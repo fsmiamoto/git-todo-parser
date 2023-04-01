@@ -55,9 +55,9 @@ func parseLine(line string) (Todo, error) {
 
 	fields := strings.Fields(line)
 
-	for i := TodoCommand(Pick); i < Comment; i++ {
+	for i := Pick; i < Comment; i++ {
 		if isCommand(i, fields[0]) {
-			todo.Command = TodoCommand(i)
+			todo.Command = i
 			fields = fields[1:]
 			break
 		}
