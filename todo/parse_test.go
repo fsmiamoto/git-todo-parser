@@ -1,11 +1,10 @@
-package todo_test
+package todo
 
 import (
 	"os"
 	"reflect"
 	"testing"
 
-	"github.com/fsmiamoto/git-todo-parser/todo"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,36 +12,36 @@ func TestParse(t *testing.T) {
 	tests := []struct {
 		name        string
 		inputPath   string
-		expect      []todo.Todo
+		expect      []Todo
 		expectError error
 	}{
-		{name: "basic", inputPath: "./fixtures/todo1", expect: []todo.Todo{
-			{Command: todo.Pick, Commit: "deadbeef", Msg: "My commit msg"},
-			{Command: todo.Pick, Commit: "beefdead", Msg: "Another awesome commit"},
-			{Command: todo.Reset, Label: "somecommit"},
-			{Command: todo.Comment, Comment: " comment"},
-			{Command: todo.Exec, ExecCommand: "cd subdir; make test"},
-			{Command: todo.Label, Label: "awesomecommit"},
-			{Command: todo.Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
-			{Command: todo.Fixup, Commit: "abbaceef"},
-			{Command: todo.Break},
+		{name: "basic", inputPath: "./fixtures/todo1", expect: []Todo{
+			{Command: Pick, Commit: "deadbeef", Msg: "My commit msg"},
+			{Command: Pick, Commit: "beefdead", Msg: "Another awesome commit"},
+			{Command: Reset, Label: "somecommit"},
+			{Command: Comment, Comment: " comment"},
+			{Command: Exec, ExecCommand: "cd subdir; make test"},
+			{Command: Label, Label: "awesomecommit"},
+			{Command: Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
+			{Command: Fixup, Commit: "abbaceef"},
+			{Command: Break},
 		}},
-		{name: "missing exec cmd", inputPath: "./fixtures/missing_exec_cmd", expectError: todo.ErrMissingExecCmd},
-		{name: "missing label", inputPath: "./fixtures/missing_label", expectError: todo.ErrMissingLabel},
-		{name: "example from git website", inputPath: "./fixtures/git_example", expect: []todo.Todo{
-			{Command: todo.Label, Label: "onto"},
-			{Command: todo.Comment, Comment: " Branch: refactor-button"},
-			{Command: todo.Reset, Label: "onto"},
-			{Command: todo.Pick, Commit: "123456", Msg: "Extract a generic Button class from the DownloadButton one"},
-			{Command: todo.Pick, Commit: "654321", Msg: "Use the Button class for all buttons"},
-			{Command: todo.Label, Label: "refactor-button"},
-			{Command: todo.Comment, Comment: " Branch: report-a-bug"},
-			{Command: todo.Reset, Label: "refactor-button"},
-			{Command: todo.Pick, Commit: "abcdef", Msg: "Add the feedback button"},
-			{Command: todo.Label, Label: "report-a-bug"},
-			{Command: todo.Reset, Label: "onto"},
-			{Command: todo.Merge, Commit: "a1b2c3", Label: "refactor-button", Msg: "Merge 'refactor-button'"},
-			{Command: todo.Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
+		{name: "missing exec cmd", inputPath: "./fixtures/missing_exec_cmd", expectError: ErrMissingExecCmd},
+		{name: "missing label", inputPath: "./fixtures/missing_label", expectError: ErrMissingLabel},
+		{name: "example from git website", inputPath: "./fixtures/git_example", expect: []Todo{
+			{Command: Label, Label: "onto"},
+			{Command: Comment, Comment: " Branch: refactor-button"},
+			{Command: Reset, Label: "onto"},
+			{Command: Pick, Commit: "123456", Msg: "Extract a generic Button class from the DownloadButton one"},
+			{Command: Pick, Commit: "654321", Msg: "Use the Button class for all buttons"},
+			{Command: Label, Label: "refactor-button"},
+			{Command: Comment, Comment: " Branch: report-a-bug"},
+			{Command: Reset, Label: "refactor-button"},
+			{Command: Pick, Commit: "abcdef", Msg: "Add the feedback button"},
+			{Command: Label, Label: "report-a-bug"},
+			{Command: Reset, Label: "onto"},
+			{Command: Merge, Commit: "a1b2c3", Label: "refactor-button", Msg: "Merge 'refactor-button'"},
+			{Command: Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
 		}},
 	}
 
@@ -53,7 +52,7 @@ func TestParse(t *testing.T) {
 
 			defer f.Close()
 
-			result, err := todo.Parse(f)
+			result, err := Parse(f)
 
 			if tt.expectError != nil {
 				require.ErrorIs(t, err, tt.expectError)
