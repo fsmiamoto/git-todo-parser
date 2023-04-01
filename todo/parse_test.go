@@ -1,7 +1,6 @@
 package todo_test
 
 import (
-	"io/ioutil"
 	"os"
 	"reflect"
 	"testing"
@@ -9,11 +8,6 @@ import (
 	"github.com/fsmiamoto/git-todo-parser/todo"
 	"github.com/stretchr/testify/require"
 )
-
-func readFixture(name string) []byte {
-	bytes, _ := ioutil.ReadFile("./fixtures/" + name)
-	return bytes
-}
 
 func TestParse(t *testing.T) {
 	tests := []struct {
