@@ -4,6 +4,7 @@ reset somecommit
 # comment
 exec cd subdir; make test
 l awesomecommit
+update-ref refs/heads/my-branch
 merge -C 6f5e4d report-a-bug # Merge 'report-a-bug'
 fixup -C abbaceef
 break

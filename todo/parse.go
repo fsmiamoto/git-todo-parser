@@ -13,6 +13,7 @@ var (
 	ErrMissingLabel      = errors.New("missing label")
 	ErrMissingCommit     = errors.New("missing commit")
 	ErrMissingExecCmd    = errors.New("missing command for exec")
+	ErrMissingRef        = errors.New("missing ref")
 )
 
 func Parse(f io.Reader) ([]Todo, error) {
@@ -117,6 +118,14 @@ func parseLine(line string) (Todo, error) {
 		if fields[0] == "-C" || fields[0] == "-c" {
 			fields = fields[1:]
 		}
+	}
+
+	if todo.Command == UpdateRef {
+		if len(fields) == 0 {
+			return todo, ErrMissingRef
+		}
+		todo.Ref = fields[0]
+		return todo, nil
 	}
 
 	if len(fields) == 0 {

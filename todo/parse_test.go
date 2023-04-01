@@ -22,6 +22,7 @@ func TestParse(t *testing.T) {
 			{Command: Comment, Comment: " comment"},
 			{Command: Exec, ExecCommand: "cd subdir; make test"},
 			{Command: Label, Label: "awesomecommit"},
+			{Command: UpdateRef, Ref: "refs/heads/my-branch"},
 			{Command: Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
 			{Command: Fixup, Commit: "abbaceef"},
 			{Command: Break},
