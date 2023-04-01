@@ -28,6 +28,7 @@ const CommentChar = "#"
 type Todo struct {
 	Command     TodoCommand
 	Commit      string
+	Flag        string
 	Comment     string
 	ExecCommand string
 	Label       string

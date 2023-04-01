@@ -91,6 +91,7 @@ func parseLine(line string) (Todo, error) {
 
 	if todo.Command == Merge {
 		if fields[0] == "-C" || fields[0] == "-c" {
+			todo.Flag = fields[0]
 			fields = fields[1:]
 			if len(fields) == 0 {
 				return todo, ErrMissingCommit
@@ -116,6 +117,7 @@ func parseLine(line string) (Todo, error) {
 		}
 		// Skip flags
 		if fields[0] == "-C" || fields[0] == "-c" {
+			todo.Flag = fields[0]
 			fields = fields[1:]
 		}
 	}
