@@ -23,8 +23,8 @@ func TestParse(t *testing.T) {
 			{Command: Exec, ExecCommand: "cd subdir; make test"},
 			{Command: Label, Label: "awesomecommit"},
 			{Command: UpdateRef, Ref: "refs/heads/my-branch"},
-			{Command: Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
-			{Command: Fixup, Commit: "abbaceef"},
+			{Command: Merge, Commit: "6f5e4d", Flag: "-C", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
+			{Command: Fixup, Commit: "abbaceef", Flag: "-C"},
 			{Command: Break},
 		}},
 		{name: "missing exec cmd", inputPath: "./fixtures/missing_exec_cmd", expectError: ErrMissingExecCmd},
@@ -41,8 +41,8 @@ func TestParse(t *testing.T) {
 			{Command: Pick, Commit: "abcdef", Msg: "Add the feedback button"},
 			{Command: Label, Label: "report-a-bug"},
 			{Command: Reset, Label: "onto"},
-			{Command: Merge, Commit: "a1b2c3", Label: "refactor-button", Msg: "Merge 'refactor-button'"},
-			{Command: Merge, Commit: "6f5e4d", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
+			{Command: Merge, Commit: "a1b2c3", Flag: "-C", Label: "refactor-button", Msg: "Merge 'refactor-button'"},
+			{Command: Merge, Commit: "6f5e4d", Flag: "-C", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
 		}},
 	}
 
