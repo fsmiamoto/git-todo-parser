@@ -1,9 +1,12 @@
 pick deadbeef My commit msg
 p beefdead Another awesome commit
 reset somecommit
+reset [new root]
+t  [new root]
 # comment
 exec cd subdir; make test
 l awesomecommit
+label theRef the rest of the line is ignored
 update-ref refs/heads/my-branch
 merge -C 6f5e4d report-a-bug # Merge 'report-a-bug'
 fixup -C abbaceef
