@@ -2,12 +2,21 @@ package todo
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestWrite(t *testing.T) {
+func TestWriteWithDefaultCommentChar(t *testing.T) {
+	testWrite(t, '#')
+}
+
+func TestWriteWithCustomCommentChar(t *testing.T) {
+	testWrite(t, ';')
+}
+
+func testWrite(t *testing.T, commentChar byte) {
 	tests := []struct {
 		name     string
 		todos    []Todo
@@ -27,17 +36,17 @@ func TestWrite(t *testing.T) {
 				{Command: Fixup, Commit: "abbaceef"},
 				{Command: Break},
 			},
-			`pick deadbeef My commit msg
+			fmt.Sprintf(`pick deadbeef My commit msg
 pick beefdead Another awesome commit
 reset somecommit
-# comment
+%c comment
 exec cd subdir; make test
 label awesomecommit
 update-ref refs/heads/my-branch
 merge -C 6f5e4d report-a-bug # Merge 'report-a-bug'
 fixup abbaceef
 break
-`,
+`, commentChar),
 		},
 		{
 			"example from git website",
@@ -56,27 +65,27 @@ break
 				{Command: Merge, Commit: "a1b2c3", Flag: "-C", Label: "refactor-button", Msg: "Merge 'refactor-button'"},
 				{Command: Merge, Commit: "6f5e4d", Flag: "-c", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
 			},
-			`label onto
-# Branch: refactor-button
+			fmt.Sprintf(`label onto
+%c Branch: refactor-button
 reset onto
 pick 123456 Extract a generic Button class from the DownloadButton one
 pick 654321 Use the Button class for all buttons
 label refactor-button
-# Branch: report-a-bug
+%c Branch: report-a-bug
 reset refactor-button
 pick abcdef Add the feedback button
 label report-a-bug
 reset onto
 merge -C a1b2c3 refactor-button # Merge 'refactor-button'
 merge -c 6f5e4d report-a-bug # Merge 'report-a-bug'
-`,
+`, commentChar, commentChar),
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			f := &bytes.Buffer{}
-			err := Write(f, tt.todos)
+			err := Write(f, tt.todos, commentChar)
 			require.NoError(t, err)
 
 			require.Equal(t, tt.expected, f.String())

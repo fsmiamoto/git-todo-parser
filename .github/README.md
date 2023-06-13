@@ -36,12 +36,13 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os/exec"
 
 	"github.com/fsmiamoto/git-todo-parser/todo"
 )
 
 func main() {
-	buf := bytes.NewBufferString(`
+	reader := bytes.NewBufferString(`
 pick 33bf560 Add third description heading
 pick 979e6c4 Create link to blog site
 edit b499fc4 Insert section to explain feature
@@ -50,7 +51,14 @@ pick 5bd6691 Update numbered list to include more talking points
 exec make test
     `)
 
-	todos, _ := todo.Parse(buf)
+	commentChar := byte('#')
+	if output, err := exec.Command("git", "config", "--null", "core.commentChar").Output(); err == nil {
+		if len(output) == 2 { // ends with the null character
+			commentChar = output[0]
+		}
+	}
+
+	todos, _ := todo.Parse(reader, commentChar)
 
 	for _, t := range todos {
 		if t.Command == todo.Pick {
@@ -60,5 +68,10 @@ exec make test
 		}
 	}
 
+	writer := &bytes.Buffer{}
+
+	if err := todo.Write(writer, todos, commentChar); err == nil {
+		fmt.Print("Original:\n", writer)
+	}
 }
 ```
