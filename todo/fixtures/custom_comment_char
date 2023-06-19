@@ -1,0 +1,10 @@
+label onto
+
+; Branch dev
+reset onto
+pick 086d35c one
+label dev
+
+reset onto
+pick ad56c2e two
+merge -C 1c87252 dev # Merge branch 'dev'
