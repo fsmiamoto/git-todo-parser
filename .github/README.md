@@ -26,6 +26,7 @@ m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
 u, update-ref <ref> = track a placeholder for the <ref> to be updated
                       to this position in the new commits. The <ref> is
                       updated at the end of the rebase
+noop = do nothing
 ```
 
 ## Example
