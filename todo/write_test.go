@@ -35,6 +35,7 @@ func testWrite(t *testing.T, commentChar byte) {
 				{Command: Merge, Commit: "6f5e4d", Flag: "-C", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
 				{Command: Fixup, Commit: "abbaceef"},
 				{Command: Break},
+				{Command: NoOp},
 			},
 			fmt.Sprintf(`pick deadbeef My commit msg
 pick beefdead Another awesome commit
@@ -46,6 +47,7 @@ update-ref refs/heads/my-branch
 merge -C 6f5e4d report-a-bug # Merge 'report-a-bug'
 fixup abbaceef
 break
+noop
 `, commentChar),
 		},
 		{

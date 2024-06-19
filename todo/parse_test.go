@@ -30,6 +30,7 @@ func TestParse(t *testing.T) {
 			{Command: Merge, Commit: "6f5e4d", Flag: "-C", Label: "report-a-bug", Msg: "Merge 'report-a-bug'"},
 			{Command: Fixup, Commit: "abbaceef", Flag: "-C"},
 			{Command: Break},
+			{Command: NoOp},
 		}},
 		{name: "missing exec cmd", inputPath: "./fixtures/missing_exec_cmd", commentChar: '#', expectError: ErrMissingExecCmd},
 		{name: "missing label", inputPath: "./fixtures/missing_label", commentChar: '#', expectError: ErrMissingLabel},
